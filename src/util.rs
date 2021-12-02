@@ -2,17 +2,17 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-pub fn to_i(v: Vec<String>) -> Vec<i32> {
+pub fn to_i32(strings: Vec<String>) -> Vec<i32> {
     let mut ret = Vec::new();
-    for line in v {
-        ret.push(line.parse().unwrap());
+    for s in strings {
+        ret.push(s.parse().unwrap());
     }
     ret
 }
 
-pub fn read_lines(file: &str) -> Vec<String> {
+pub fn read_lines(filename: &str) -> Vec<String> {
     let mut str = "src/".to_owned();
-    str.push_str(&file);
+    str.push_str(filename);
     return _read_lines(str);
 }
 
@@ -21,9 +21,8 @@ where P: AsRef<Path>, {
     let mut ret = Vec::new();
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
-    for (_, line) in reader.lines().enumerate() {
-        let line = line.unwrap();
-        ret.push(line);
+    for line in reader.lines() {
+        ret.push(line.unwrap());
     }
     ret
 }

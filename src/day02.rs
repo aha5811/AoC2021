@@ -1,5 +1,5 @@
-pub fn day02_1(s: &str) -> i32 {
-    let cmnds = to_cmds(super::util::read_lines(s));
+pub fn day02_1(filename: &str) -> i32 {
+    let cmnds = to_cmds(crate::util::read_lines(filename));
     let mut h = 0;
     let mut v = 0;
     for cmd in cmnds {
@@ -17,9 +17,9 @@ pub fn day02_1(s: &str) -> i32 {
 enum Dir { F, B, U, D, ERR }
 struct Cmd { d: Dir, n: i32 }
 
-fn to_cmds(v: Vec<String>) -> Vec<Cmd> {
+fn to_cmds(strings: Vec<String>) -> Vec<Cmd> {
     let mut ret = Vec::new();
-    for s in v {
+    for s in strings {
         let cmd: Vec<&str> = s.split(' ').collect();
         let d: Dir = match cmd[0] {
             "forward" => Dir::F,
@@ -34,8 +34,8 @@ fn to_cmds(v: Vec<String>) -> Vec<Cmd> {
     ret
 }
 
-pub fn day02_2(s: &str) -> i32 {
-    let cmnds = to_cmds(super::util::read_lines(s));
+pub fn day02_2(filename: &str) -> i32 {
+    let cmnds = to_cmds(crate::util::read_lines(filename));
     let mut h = 0;
     let mut v = 0;
     let mut dspeed = 0; // aim

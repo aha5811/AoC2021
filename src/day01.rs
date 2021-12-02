@@ -1,31 +1,33 @@
-pub fn day01_1(s: &str) -> i32 {
-    return day01(&super::util::to_i(super::util::read_lines(s)));
+pub fn day01_1(filename: &str) -> i32 {
+    return day01(&crate::util::to_i32(crate::util::read_lines(filename)));
 }
 
 fn day01(ns: &Vec<i32>) -> i32 {
     let mut cnt = 0;
     let mut last = -1;
-    for curr in ns {
-        if last != -1 && curr > &last {
+    for n in ns {
+        if last != -1 && n > &last {
             cnt = cnt + 1
         }
-        last = *curr;
+        last = *n
     }
-    cnt   
+    cnt
 }
 
-pub fn day01_2(s: &str) -> i32 {
-    let ns = super::util::to_i(super::util::read_lines(s));
+pub fn day01_2(filename: &str) -> i32 {
+    let ns = crate::util::to_i32(crate::util::read_lines(filename));
 
-    let mut a = vec![0; ns.len() + 2];
+    let wsize = 2; // window size 3
 
-    for (i, n) in ns.iter().enumerate() {
-        a[i] = a[i] + n;
-        a[i + 1] = a[i + 1] + n;
-        a[i + 2] = a[i + 2] + n;
+    let mut a = vec![0; ns.len() + wsize];
+
+    for (p, n) in ns.iter().enumerate() {
+        for i in 0..=wsize {
+            a[p + i] = a[p + i] + n
+        }
     }
 
-    let a = &a[2..a.len() - 2];
+    let a = &a[wsize .. a.len() - wsize];
 
-    return day01(&a.to_vec());
+    day01(&a.to_vec())
 }
