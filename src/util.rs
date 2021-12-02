@@ -10,10 +10,12 @@ pub fn to_i32(strings: Vec<String>) -> Vec<i32> {
     ret
 }
 
+const DIR: &str = "src/inputs/";
+
 pub fn read_lines(filename: &str) -> Vec<String> {
-    let mut str = "src/".to_owned();
+    let mut str = DIR.to_owned();
     str.push_str(filename);
-    return _read_lines(str);
+    _read_lines(str)
 }
 
 fn _read_lines<P>(filename: P) -> Vec<String>
@@ -25,4 +27,12 @@ where P: AsRef<Path>, {
         ret.push(line.unwrap());
     }
     ret
+}
+
+pub fn test_i32(string: &str, exp: i32, res: i32) {
+    if exp == res {
+        println!("{} ok", string);
+    } else {
+        println!("{0} failed! expected {1:?} but was {2:?}", string, exp, res)
+    }
 }
