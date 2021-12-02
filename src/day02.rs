@@ -1,18 +1,19 @@
-pub fn day02_1(filename: &str) -> i32 {
+pub fn part1(filename: &str) -> i32 {
     let cmnds = to_cmds(crate::util::read_lines(filename));
     let mut h = 0;
     let mut v = 0;
     for cmd in cmnds {
         match cmd.dir {
-            Dir::F => { h = h + cmd.n },
-            Dir::B => { h = h - cmd.n },
-            Dir::U => { v = v - cmd.n },
-            Dir::D => { v = v + cmd.n }
+            Dir::F => { h += cmd.n },
+            Dir::B => { h -= cmd.n },
+            Dir::U => { v -= cmd.n },
+            Dir::D => { v += cmd.n }
         }
     }
     h * v
 }
 
+#[derive(PartialEq)]
 enum Dir { F, B, U, D }
 
 impl std::str::FromStr for Dir {
@@ -43,17 +44,20 @@ fn to_cmds(strings: Vec<String>) -> Vec<Cmd> {
     ret
 }
 
-pub fn day02_2(filename: &str) -> i32 {
+pub fn part2(filename: &str) -> i32 {
     let cmnds = to_cmds(crate::util::read_lines(filename));
     let mut h = 0;
     let mut v = 0;
     let mut dspeed = 0; // aim
     for cmd in cmnds {
         match cmd.dir {
-            Dir::F => { h = h + cmd.n; v = v + cmd.n * dspeed; },
-            Dir::B => { h = h - cmd.n; v = v + cmd.n * dspeed; },
-            Dir::U => { dspeed = dspeed - cmd.n },
-            Dir::D => { dspeed = dspeed + cmd.n }
+            Dir::F => { h += cmd.n }
+            Dir::B => { h -= cmd.n }
+            Dir::U => { dspeed -= cmd.n }
+            Dir::D => { dspeed += cmd.n }
+        }
+        if cmd.dir == Dir::F || cmd.dir == Dir::B {
+            v += cmd.n * dspeed
         }
     }
     h * v
