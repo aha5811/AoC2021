@@ -1,16 +1,19 @@
 pub fn part1(filename: &str) -> i32 {
-    return cnt_inc(&crate::util::to_i32(crate::util::read_lines(filename)));
+    cnt_inc(crate::util::to_i32(crate::util::read_lines(filename)))
 }
 
-fn cnt_inc(ns: &Vec<i32>) -> i32 {
+fn cnt_inc(ns: Vec<i32>) -> i32 {
     let mut cnt = 0;
+
     let mut last = -1;
+
     for n in ns {
-        if last != -1 && n > &last {
+        if last != -1 && n > last {
             cnt = cnt + 1
         }
-        last = *n
+        last = n
     }
+
     cnt
 }
 
@@ -29,5 +32,5 @@ pub fn part2(filename: &str) -> i32 {
 
     let a = &a[wsize .. a.len() - wsize];
 
-    cnt_inc(&a.to_vec())
+    cnt_inc(a.to_vec())
 }

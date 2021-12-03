@@ -16,7 +16,7 @@ pub fn part1(filename: &str) -> i32 {
     let mut gamma = "".to_owned();
     let mut epsilon = "".to_owned();
     {
-        let thh = strings.len() / 2;
+        let thh = &strings.len() / 2;
 
         for i in 0..len {
             let more1 = cnt1s[i] >= thh;

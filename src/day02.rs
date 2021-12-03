@@ -1,7 +1,9 @@
 pub fn part1(filename: &str) -> i32 {
     let cmnds = to_cmds(crate::util::read_lines(filename));
+
     let mut h = 0;
     let mut v = 0;
+
     for cmd in cmnds {
         match cmd.dir {
             Dir::F => { h += cmd.n },
@@ -10,6 +12,7 @@ pub fn part1(filename: &str) -> i32 {
             Dir::D => { v += cmd.n }
         }
     }
+    
     h * v
 }
 
@@ -34,6 +37,7 @@ struct Cmd { dir: Dir, n: i32 }
 
 fn to_cmds(strings: Vec<String>) -> Vec<Cmd> {
     let mut ret = Vec::new();
+
     for s in strings {
         let cmd: Vec<&str> = s.split(' ').collect();
         ret.push(Cmd {
@@ -41,14 +45,17 @@ fn to_cmds(strings: Vec<String>) -> Vec<Cmd> {
             n: cmd[1].parse().unwrap()
         });
     }
+
     ret
 }
 
 pub fn part2(filename: &str) -> i32 {
     let cmnds = to_cmds(crate::util::read_lines(filename));
+
     let mut h = 0;
     let mut v = 0;
     let mut dspeed = 0; // aim
+
     for cmd in cmnds {
         match cmd.dir {
             Dir::F => { h += cmd.n }
@@ -60,5 +67,6 @@ pub fn part2(filename: &str) -> i32 {
             v += cmd.n * dspeed
         }
     }
+
     h * v
 }
