@@ -32,30 +32,28 @@ fn to_i32(s: &str) -> i32 {
     isize::from_str_radix(s, 2).unwrap() as i32
 }
 
-fn filter(strings: Vec<String>, pos: i32, most: bool) -> Vec<String> {
-
+fn filter(strings: Vec<String>, pos: usize, most: bool) -> Vec<String> {
     let mut ret1 = Vec::new();
     let mut ret0 = Vec::new();
 
     for s in strings {
-        let cc = s.chars().nth(pos as usize).unwrap();
-        if cc == '1' {
+        let c = s.chars().nth(pos as usize).unwrap();
+        if c == '1' {
             ret1.push(s)
         } else {
             ret0.push(s)
         }
     }
 
-    if (ret1.len() >= ret0.len()) ^ most {
-        ret0
-    } else {
+    if (ret1.len() >= ret0.len()) ^ !most {
         ret1
+    } else {
+        ret0
     }
 }
 
-fn get_filtered(strings: &Vec<String>, len: i32, most: bool) -> i32 {
+fn get_filtered(strings: &Vec<String>, len: usize, most: bool) -> i32 {
     let mut filtered = strings.clone();
-
     for pos in 0.. len {
         filtered = filter(filtered, pos, most);
         if filtered.len() == 1 {
@@ -68,9 +66,10 @@ fn get_filtered(strings: &Vec<String>, len: i32, most: bool) -> i32 {
 
 pub fn part2(filename: &str) -> i32 {
     let strings = crate::util::read_lines(filename);
-    let len = strings.iter().next().unwrap().len() as i32;
+    let len = strings.iter().next().unwrap().len() as usize;
 
-    get_filtered(&strings, len, true) // oxygen generator rating
-    *
-    get_filtered(&strings, len, false) // CO2 scrubber rating
+    let oxy_r = get_filtered(&strings, len, true); // oxygen generator rating
+    let co2_r = get_filtered(&strings, len, false); // CO2 scrubber rating
+    
+    oxy_r * co2_r
 }
