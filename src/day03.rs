@@ -37,7 +37,7 @@ fn filter(strings: Vec<String>, pos: usize, most: bool) -> Vec<String> {
     let mut ret0 = Vec::new();
 
     for s in strings {
-        let c = s.chars().nth(pos as usize).unwrap();
+        let c = s.chars().nth(pos).unwrap();
         if c == '1' {
             ret1.push(s)
         } else {

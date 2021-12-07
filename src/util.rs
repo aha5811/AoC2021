@@ -29,7 +29,19 @@ where P: AsRef<Path>, {
     ret
 }
 
+pub fn read_ns(string: String) -> Vec<i32> {
+    return string.split(',').map(|n| n.parse::<i32>().unwrap()).collect()
+}
+
 pub fn test_i32(string: &str, exp: i32, res: i32) {
+    if exp == res {
+        println!("{} ok", string);
+    } else {
+        println!("{0} failed! expected {1:?} but was {2:?}", string, exp, res)
+    }
+}
+
+pub fn test_i128(string: &str, exp: i128, res: i128) {
     if exp == res {
         println!("{} ok", string);
     } else {
