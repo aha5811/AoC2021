@@ -11,8 +11,10 @@ pub fn part2(filename: &str) -> i32 {
 fn compute(filename: &str, with_diags: bool) -> i32 {
     let strings = crate::util::read_lines(filename);
 
+    // read lines
+
     let mut lines = Vec::<Line>::new();
-    for string in strings { // 0,9 -> 5,9
+    for string in strings { // "0,9 -> 5,9"
         let ps: Vec<String> =
             string
             .split(' ')
@@ -21,6 +23,8 @@ fn compute(filename: &str, with_diags: bool) -> i32 {
             .collect();
         lines.push(Line { start: _read_point(ps[0].to_owned()), end:  _read_point(ps[1].to_owned()) });
     }
+
+    // board setup
 
     let mut maxx = 0;
     let mut maxy = 0;
@@ -36,6 +40,8 @@ fn compute(filename: &str, with_diags: bool) -> i32 {
         width: maxx,
         data: vec![0; maxx * maxy]
     };
+
+    // draw lines
 
     for line in lines {
         if with_diags || line.is_line() {

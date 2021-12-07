@@ -1,46 +1,35 @@
 use std::cmp;
 
 pub fn part1(filename: &str) -> i32 {
-    compute(filename, cost1)
+    compute(filename, dist)
 }
 
 pub fn part2(filename: &str) -> i32 {
-    compute(filename, cost2)
+    compute(filename, incr)
 }
 
-fn cost1(a: i32, b: i32) -> i32 {
+fn dist(a: i32, b: i32) -> i32 {
     (a - b).abs()
 }
 
-fn cost2(a: i32, b: i32) -> i32 {
-    let mut ret = 0;
-
-    let l = cost1(a, b);
-    for i in 1..=l {
-        ret += i;
-    }
-
-    ret
+fn incr(a: i32, b: i32) -> i32 {
+    let l = dist(a, b);
+    (l * (l + 1)) / 2 // gauss
 }
 
 fn compute(filename: &str, cost: fn(i32, i32) -> i32) -> i32 {
     let mut strings = crate::util::read_lines(filename);
-    let ns = crate::util::read_ns(strings.remove(0));
+    let ps = crate::util::read_ns(strings.remove(0)); // crab positions
 
-    let mut min = 0;
-    let mut max = 0;
-
-    for n in &ns {
-        min = cmp::min(min, *n);
-        max = cmp::max(max, *n);
-    }
+    let pmin = *ps.iter().min().unwrap();
+    let pmax = *ps.iter().max().unwrap();
 
     let mut minfuel = i32::MAX;
 
-    for i in min..=max {
+    for g in pmin..=pmax { // goal
         let mut fuel = 0;
-        for n in &ns {
-            fuel += cost(i, *n);
+        for p in &ps {
+            fuel += cost(g, *p);
         }
         minfuel = cmp::min(minfuel, fuel);
     }

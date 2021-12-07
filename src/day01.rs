@@ -22,7 +22,9 @@ pub fn part2(filename: &str) -> i32 {
 
     let wsize = 2; // window size 3
 
-    let mut a = vec![0; ns.len() + wsize];
+    // generate list of all window sums
+
+    let mut a = vec![0; ns.len() + wsize]; // bigger
 
     for (p, n) in ns.iter().enumerate() {
         for i in 0..=wsize {
@@ -30,7 +32,7 @@ pub fn part2(filename: &str) -> i32 {
         }
     }
 
-    let a = &a[wsize .. a.len() - wsize];
+    let a = &a[wsize .. a.len() - wsize]; // cut invalid values
 
-    cnt_inc(a.to_vec())
+    cnt_inc(a.to_vec()) // use part1
 }

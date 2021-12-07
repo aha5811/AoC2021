@@ -51,7 +51,7 @@ fn _read_board(bns: &Vec<i32>, boards: &mut Vec<Board>) -> bool {
             Board {
                 n: boards.len() as i32,
                 size: size,
-                data: bns.clone(),
+                numbers: bns.clone(),
                 hits: vec![false; size * size]
             });
 
@@ -64,15 +64,15 @@ fn _read_board(bns: &Vec<i32>, boards: &mut Vec<Board>) -> bool {
 struct Board {
     n: i32,
     size: usize,
-    data: Vec<i32>,
+    numbers: Vec<i32>,
     hits: Vec<bool>
 }
 
 impl Board {
 
-    fn call(&mut self, v: i32) {
+    fn call(&mut self, n: i32) {
         for i in 0 .. self.size * self.size {
-            if self.data[i] == v {
+            if self.numbers[i] == n {
                 self.hits[i] = true
             }
         }
@@ -80,23 +80,19 @@ impl Board {
 
     fn res(&self) -> i32 {
         if self._win() {
-            let mut res = 0;
+            let mut ret = 0;
             for i in 0 .. self.size * self.size {
                 if !self.hits[i] {
-                    res += self.data[i]
+                    ret += self.numbers[i]
                 }
             }
-            res
+            ret
         } else {
             0
         }
     }
 
-    fn _v(&self, w: usize, h: usize) -> i32 {
-        self.data[h * self.size + w]
-    }
-
-    fn _h(&self, w: usize, h: usize) -> bool {
+    fn _hit(&self, w: usize, h: usize) -> bool {
         self.hits[h * self.size + w]
     }
 
@@ -116,7 +112,7 @@ impl Board {
 
     fn _win_line(&self, x: usize, dir: bool) -> bool {
         for i in 0..self.size {
-            let hit = if dir { self._h(i, x) } else { self._h(x, i) };
+            let hit = if dir { self._hit(i, x) } else { self._hit(x, i) };
             if !hit {
                 return false
             }

@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "bungcip.better-toml",
+        "vadimcn.vscode-lldb",
+        "serayuzgur.crates",
+        "github.vscode-pull-request-github",
+        "rust-lang.rust",
+        "swellaby.rust-pack"
+    ]
+}
