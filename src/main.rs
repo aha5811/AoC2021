@@ -5,6 +5,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 fn main() {
     println!("day01 #1: {}", day01::part1("day01"));
@@ -34,5 +35,10 @@ fn main() {
     println!("day06 #1: {}", day06::part1("day06", 80));
     util::test_i128("day06 #2 test", 26984457539, day06::part2("day06_test", 256));
     println!("day06 #2: {}", day06::part2("day06", 256));
+    println!("-------------------------------------");
+    util::test_i32("day07 #1 test", 37, day07::part1("day07_test"));
+    println!("day07 #1: {}", day07::part1("day07"));
+    util::test_i32("day07 #2 test", 168, day07::part2("day07_test"));
+    println!("day07 #2: {}", day07::part2("day07"));
     println!("-------------------------------------");
 }

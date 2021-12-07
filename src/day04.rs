@@ -73,7 +73,6 @@ impl Board {
     fn call(&mut self, v: i32) {
         for i in 0 .. self.size * self.size {
             if self.data[i] == v {
-                // println!("board {} hit {} at {}", self.n, v, i);
                 self.hits[i] = true
             }
         }
@@ -81,7 +80,6 @@ impl Board {
 
     fn res(&self) -> i32 {
         if self._win() {
-            // println!("board {} bingo", self.n);
             let mut res = 0;
             for i in 0 .. self.size * self.size {
                 if !self.hits[i] {
@@ -126,6 +124,7 @@ impl Board {
         true
     }
 
+    /*
     fn _win_diag(&self, dir: bool) -> bool {
         for h in 0..self.size {
             let v = if dir { self.size - h - 1 } else { h };
@@ -135,6 +134,7 @@ impl Board {
         }
         true
     }
+    */
 }
 
 
@@ -145,22 +145,21 @@ pub fn part2(filename: &str) -> i32 {
 
     let mut boards = _read_boards(strings);
 
-    let mut off = Vec::<i32>::new();
+    let mut boards_done = Vec::<i32>::new();
 
     let bcnt = boards.len();
 
     for n in ns {
         for b in boards.iter_mut() {
-            if off.contains(&b.n) {
+            if boards_done.contains(&b.n) {
                 continue;
             }
             b.call(n);
             let res = b.res();
             if res != 0 {
-                if off.len() == bcnt - 1 {
+                boards_done.push(b.n);
+                if boards_done.len() == bcnt {
                     return res * n;
-                } else {
-                    off.push(b.n);
                 }
             }
         }
