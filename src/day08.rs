@@ -60,20 +60,7 @@ pub fn part2(filename: &str) -> i32 {
     let mut ret: i32 = 0;
 
     for mut iio in iios {
-
-        let sol = solve_wiring(&mut iio);
-        // -> char[] 0~a 1~b 2~c 3~d 4~e 5~f 6~g
-        // [1234560] -> 0=1 (a is connected to b), 1=2 (b is connected to c), ...
-
-        let mut n = 0;
-        for (i, o) in iio.out.iter().enumerate() {
-            let d = to_digit(o, &sol) as i32;
-            let multi = 10i32.pow(3 - i as u32);
-            n += d * multi;
-            // translate out to digits
-        }
-
-        ret += n;
+        ret += solve_wiring(&mut iio);
     }
 
     ret
@@ -110,59 +97,72 @@ fn to_iio(strings: Vec<String>) -> Vec<Vec<usize>> {
     ret
 }
 
-fn solve_wiring(iio: &mut IIO) -> Vec<usize> {
+fn solve_wiring(iio: &mut IIO) -> i32 {
 
     let mut all = Vec::<Vec<usize>>::new();
     add_no_dupes(&mut all, &mut iio.inp);
     add_no_dupes(&mut all, &mut iio.out);
     // all ten digits
 
-    // 1 = length 2
-    // 4 = length 4
-    // 7 = length 3
-    // 8 = length 7
-
-    // get 1 and 7, subtract to get a, 1 is (cf)
-    // get 1 and 4, subtract to get (bd)
-    // in all with len 5, only 5 has (bd) -> 5
-    // in all with len 6, only 0 has not (bd) -> 0
-    // diff between 8 and 0 is d -> b
-    // subtract abd from 5, the rest (fg) shares f with (cf) -> f -> c
-    // a b c d f
-    // remove all from 5 -> g
-    // len 6 = 6 or 9, 6 does not contain c -> 6, 6 diff 5 is e
-
     let cf = find_len(&all, 2); // 1
     let bcdf = find_len(&all, 4); // 4
     let acf = find_len(&all, 3); // 7
     let eight = find_len(&all, 7);
-    let a = subtract(&acf, &cf);
-    let bd = subtract(&bcdf, &cf);
     let fives = find_lens(&all, 5); // 5 2 3
     let sixes = find_lens(&all, 6); // 6 9 0
-    let five = find_with(&fives, &bd);
-    let six_nine = find_withs(&sixes, &bd); // 6 9
-    let zero = subtracts(&sixes, &six_nine)[0].clone();
-    let d = subtract(&eight, &zero);
-    let b = subtract(&bd, &d);
+
+    let a = subtract(&acf, &cf);
+    let bd = subtract(&bcdf, &cf);
+    let five = find_withs(&fives, &bd)[0].clone(); // only 5 has b
+    let six_nine = find_withs(&sixes, &bd); // only 6 & 9 have d
+    let zero = subtracts(&sixes, &six_nine)[0].clone(); // 0 is the other one
+    // let d = subtract(&eight, &zero);
+    // let b = subtract(&bd, &d);
     let bdfg = subtract(&five, &a);
     let fg = subtract(&bdfg, &bd);
     let c = subtract(&cf, &fg);
-    let f = subtract(&cf, &c);
-    let g = subtract(&fg, &f);
-    let nine_s = find_withs(&six_nine, &c);
-    let six = subtracts(&six_nine, &nine_s)[0].clone();
+    // let f = subtract(&cf, &c);
+    // let g = subtract(&fg, &f);
+    let nine = find_withs(&six_nine, &c)[0].clone(); // only 9 has c
+    let six = subtracts1(&six_nine, &nine)[0].clone(); // 6 is the other one
     let e = subtract(&six, &five);
+    let two_three = subtracts1(&fives, &five);
+    let two = find_withs(&two_three, &e)[0].clone(); // only 2 has e
+    let three = subtracts1(&two_three, &two)[0].clone(); // 3 is the other one
 
-    let mut ret = Vec::new();
-    ret.push(a[0]);
-    ret.push(b[0]);
-    ret.push(c[0]);
-    ret.push(d[0]);
-    ret.push(e[0]);
-    ret.push(f[0]);
-    ret.push(g[0]);
-    ret
+    // push in order
+
+    let mut digits = Vec::new();
+    digits.push(zero);
+    digits.push(cf);
+    digits.push(two);
+    digits.push(three);
+    digits.push(bcdf);
+    digits.push(five);
+    digits.push(six);
+    digits.push(acf);
+    digits.push(eight);
+    digits.push(nine);
+
+    let mut n = 0;
+
+    // iter over outs
+
+    for (pos, odigit) in iio.out.iter().enumerate() {
+
+        // find same patter, its position is the result
+
+        let mut d: i32 = 0;
+        for (dval, digit) in digits.iter().enumerate() {
+            if is_same(odigit, digit) {
+                d = dval as i32
+            }
+        }
+        let multi = 10i32.pow(3 - pos as u32); // 1000, 100, 10, 1
+        n += d as i32 * multi;
+    }
+
+    n
 }
 
 fn subtracts(v1s: &Vec<Vec<usize>>, v2s: &Vec<Vec<usize>>) -> Vec<Vec<usize>> {
@@ -181,14 +181,14 @@ fn subtracts(v1s: &Vec<Vec<usize>>, v2s: &Vec<Vec<usize>>) -> Vec<Vec<usize>> {
     ret
 }
 
-fn find_with(vs: &Vec<Vec<usize>>, pattern: &Vec<usize>) -> Vec<usize> {
-    for v in vs {
-        if has_with(v, pattern) {
-            return v.clone()
+fn subtracts1(vs: &Vec<Vec<usize>>, v: &Vec<usize>) -> Vec<Vec<usize>> {
+    let mut ret = Vec::new();
+    for av in vs {
+        if !is_same(av, v) {
+            ret.push(av.clone())
         }
     }
-    
-    Vec::new() // won't happen
+    ret
 }
 
 fn find_withs(vs: &Vec<Vec<usize>>, pattern: &Vec<usize>) -> Vec<Vec<usize>> {
@@ -252,54 +252,6 @@ fn add_no_dupes(dst: &mut Vec<Vec<usize>>, src: &mut Vec<Vec<usize>>) {
             dst.push(s.clone());
         }
     }
-}
-
-fn to_digit(ds: &Vec<usize>, sol: &Vec<usize>) -> usize {
-    // ds [1,2,3,4]
-    // sol [0, 1, 2, 3, 4, 5, 6, 7, 8]
-    let mut u = Vec::<usize>::new();
-    for d in ds {
-        u.push(sol[*d]);
-    }
-    u.sort();
-
-    for (i, au) in strings().iter().enumerate() {
-        if is_same(&u, au) {
-            return i
-        }
-    }
-
-    0
-}
-
-const STRINGS: [&str; 10] = [
-    "abc_efg", // 0
-    "__c__f_", // 1
-    "a_cde_g", // 2
-    "a_cd_fg", // 3
-    "_bcd_f_", // 4
-    "ab_d_fg", // 5
-    "ab_defg", // 6
-    "a_c__f_", // 7
-    "abcdefg", // 8
-    "abcd_fg" // 9
-];
-
-fn strings() -> Vec<Vec<usize>> {
-    let mut ret = Vec::<Vec<usize>>::new();
-
-    for string in STRINGS {
-        let mut u = Vec::<usize>::new();
-        for cc in string.chars() {
-            if cc != '_' {
-                u.push(CHARS.find(cc).unwrap() as usize);
-            }
-        }
-        u.sort();
-        ret.push(u);
-    }
-
-    ret
 }
 
 fn is_same(v1: &Vec<usize>, v2: &Vec<usize>) -> bool {
