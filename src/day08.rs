@@ -104,18 +104,18 @@ fn solve_wiring(iio: &mut IIO) -> i32 {
     add_no_dupes(&mut all, &mut iio.out);
     // all ten digits
 
-    let cf = find_len(&all, 2); // 1
-    let bcdf = find_len(&all, 4); // 4
-    let acf = find_len(&all, 3); // 7
-    let eight = find_len(&all, 7);
+    let cf = find_lens(&all, 2)[0].clone(); // 1
+    let bcdf = find_lens(&all, 4)[0].clone(); // 4
+    let acf = find_lens(&all, 3)[0].clone(); // 7
+    let eight = find_lens(&all, 7)[0].clone();
     let fives = find_lens(&all, 5); // 5 2 3
     let sixes = find_lens(&all, 6); // 6 9 0
 
     let a = subtract(&acf, &cf);
     let bd = subtract(&bcdf, &cf);
     let five = find_withs(&fives, &bd)[0].clone(); // only 5 has b
-    let six_nine = find_withs(&sixes, &bd); // only 6 & 9 have d
-    let zero = subtracts(&sixes, &six_nine)[0].clone(); // 0 is the other one
+    let six_n_nine = find_withs(&sixes, &bd); // only 6 & 9 have d
+    let zero = subtracts(&sixes, &six_n_nine)[0].clone(); // 0 is the other one
     // let d = subtract(&eight, &zero);
     // let b = subtract(&bd, &d);
     let bdfg = subtract(&five, &a);
@@ -123,46 +123,36 @@ fn solve_wiring(iio: &mut IIO) -> i32 {
     let c = subtract(&cf, &fg);
     // let f = subtract(&cf, &c);
     // let g = subtract(&fg, &f);
-    let nine = find_withs(&six_nine, &c)[0].clone(); // only 9 has c
-    let six = subtracts1(&six_nine, &nine)[0].clone(); // 6 is the other one
+    let nine = find_withs(&six_n_nine, &c)[0].clone(); // only 9 has c
+    let six = subtracts1(&six_n_nine, &nine)[0].clone(); // 6 is the other one
     let e = subtract(&six, &five);
-    let two_three = subtracts1(&fives, &five);
-    let two = find_withs(&two_three, &e)[0].clone(); // only 2 has e
-    let three = subtracts1(&two_three, &two)[0].clone(); // 3 is the other one
+    let two_n_three = subtracts1(&fives, &five);
+    let two = find_withs(&two_n_three, &e)[0].clone(); // only 2 has e
+    let three = subtracts1(&two_n_three, &two)[0].clone(); // 3 is the other one
 
-    // push in order
+    // all digit patterns
 
-    let mut digits = Vec::new();
-    digits.push(zero);
-    digits.push(cf);
-    digits.push(two);
-    digits.push(three);
-    digits.push(bcdf);
-    digits.push(five);
-    digits.push(six);
-    digits.push(acf);
-    digits.push(eight);
-    digits.push(nine);
+    let digits = [ zero, cf, two, three, bcdf, five, six, acf, eight, nine ];
 
-    let mut n = 0;
+    let mut ret = 0;
 
     // iter over outs
 
-    for (pos, odigit) in iio.out.iter().enumerate() {
+    for (pos, opattern) in iio.out.iter().enumerate() {
 
-        // find same patter, its position is the result
+        // find same pattern, its position is the result
 
-        let mut d: i32 = 0;
-        for (dval, digit) in digits.iter().enumerate() {
-            if is_same(odigit, digit) {
-                d = dval as i32
+        let mut n: i32 = 0;
+        for (digit, pattern) in digits.iter().enumerate() {
+            if is_same(opattern, pattern) {
+                n = digit as i32
             }
         }
         let multi = 10i32.pow(3 - pos as u32); // 1000, 100, 10, 1
-        n += d as i32 * multi;
+        ret += n * multi;
     }
 
-    n
+    ret
 }
 
 fn subtracts(v1s: &Vec<Vec<usize>>, v2s: &Vec<Vec<usize>>) -> Vec<Vec<usize>> {
@@ -218,16 +208,6 @@ fn find_lens(vs: &Vec<Vec<usize>>, l: usize) -> Vec<Vec<usize>> {
         }
     }
     ret
-}
-
-fn find_len(vs: &Vec<Vec<usize>>, l: usize) -> Vec<usize> {
-    for v in vs {
-        if v.len() == l {
-            return v.clone();
-        }
-    }
-
-    Vec::new() // won't happen
 }
 
 fn subtract(u1s: &Vec<usize>, u2s: &Vec<usize>) -> Vec<usize> {
