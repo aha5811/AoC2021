@@ -50,9 +50,9 @@ fn read_boards(strings: Vec<String>) -> Vec<Board> {
     ret
 }
 
-fn read_board(bns: &Vec<i32>, boards: &mut Vec<Board>) -> bool {
+fn read_board(bns: &mut Vec<i32>, boards: &mut Vec<Board>) -> bool {
     if (&bns).len() > 0 {
-        let size = (bns.len() as f64).sqrt() as usize;
+        let size = ((&bns).len() as f64).sqrt() as usize;
         boards.push(
             Board {
                 n: boards.len() as i32,
