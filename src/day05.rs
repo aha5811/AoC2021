@@ -46,7 +46,7 @@ fn compute(filename: &str, with_diags: bool) -> i32 {
 
     let mut b = Board{
         width: maxx,
-        data: vec![0; maxx * maxy]
+        thicknesses: vec![0; maxx * maxy]
     };
 
     // draw lines
@@ -72,21 +72,21 @@ fn read_point(s: String) -> Point {
 
 struct Board {
     width: usize,
-    data: Vec<usize>
+    thicknesses: Vec<usize>
 }
 
 impl Board {
 
     fn add_point(&mut self, p: Point) {
         let i = self.width * p.y + p.x;
-        self.data[i] += 1
+        self.thicknesses[i] += 1
     }
 
     fn cnt(self, t: usize) -> i32 {
         let mut ret = 0;
 
-        for i in self.data.iter() {
-            if i > &t {
+        for thickness in self.thicknesses.iter() {
+            if thickness > &t {
                 ret += 1
             }
         }
