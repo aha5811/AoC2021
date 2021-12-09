@@ -1,10 +1,16 @@
 
+pub fn main() {
+    crate::util::test_i32("day04 #1 test", 4512, part1("day04_test"));
+    println!("day04 #1: {}", part1("day04"));
+    crate::util::test_i32("day04 #2 test", 1924, part2("day04_test"));
+    println!("day04 #2: {}", part2("day04"));
+}
+
 pub fn part1(filename: &str) -> i32 {
     let mut strings = crate::util::read_lines(filename);
-    
     let ns = crate::util::read_ns(strings.remove(0));
 
-    let mut boards = _read_boards(strings);
+    let mut boards = read_boards(strings);
 
     for n in ns {
         for b in boards.iter_mut() {
@@ -19,7 +25,7 @@ pub fn part1(filename: &str) -> i32 {
     0
 }
 
-fn _read_boards(strings: Vec<String>) -> Vec<Board> {
+fn read_boards(strings: Vec<String>) -> Vec<Board> {
     let mut ret = Vec::<Board>::new();
     {
         let mut bns = Vec::<i32>::new();
@@ -33,18 +39,18 @@ fn _read_boards(strings: Vec<String>) -> Vec<Board> {
                         .collect();
                 bns.append(&mut lns);
             } else {
-                if _read_board(&mut bns, &mut ret) {
+                if read_board(&mut bns, &mut ret) {
                     bns = Vec::<i32>::new();
                 }
             }
         }
-        _read_board(&mut bns, &mut ret);
+        read_board(&mut bns, &mut ret);
     }
 
     ret
 }
 
-fn _read_board(bns: &Vec<i32>, boards: &mut Vec<Board>) -> bool {
+fn read_board(bns: &Vec<i32>, boards: &mut Vec<Board>) -> bool {
     if (&bns).len() > 0 {
         let size = (bns.len() as f64).sqrt() as usize;
         boards.push(
@@ -133,13 +139,11 @@ impl Board {
     */
 }
 
-
 pub fn part2(filename: &str) -> i32 {
     let mut strings = crate::util::read_lines(filename);
-    
     let ns = crate::util::read_ns(strings.remove(0));
 
-    let mut boards = _read_boards(strings);
+    let mut boards = read_boards(strings);
 
     let mut boards_done = Vec::<i32>::new();
 

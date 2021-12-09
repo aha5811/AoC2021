@@ -1,3 +1,10 @@
+
+pub fn main() {
+    println!("day03 #1: {}", part1("day03"));
+    crate::util::test_i32("day03 #2 test", 230, part2("day03_2_test"));
+    println!("day03 #2: {}", part2("day03"));
+}
+
 pub fn part1(filename: &str) -> i32 {
     let strings = crate::util::read_lines(filename);
     

@@ -1,3 +1,11 @@
+
+pub fn main() {
+    crate::util::test_i32("day07 #1 test", 37, part1("day07_test"));
+    println!("day07 #1: {}", part1("day07"));
+    crate::util::test_i32("day07 #2 test", 168, part2("day07_test"));
+    println!("day07 #2: {}", part2("day07"));
+}
+
 use std::cmp;
 
 pub fn part1(filename: &str) -> i32 {

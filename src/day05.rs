@@ -1,3 +1,11 @@
+
+pub fn main() {
+    crate::util::test_i32("day05 #1 test", 5, part1("day05_test"));
+    println!("day05 #1: {}", part1("day05"));
+    crate::util::test_i32("day05 #2 test", 12, part2("day05_test"));
+    println!("day05 #2: {}", part2("day05"));
+}
+
 use std::cmp;
 
 pub fn part1(filename: &str) -> i32 {
@@ -21,7 +29,7 @@ fn compute(filename: &str, with_diags: bool) -> i32 {
             .filter(|s| s.find(',') != None)
             .map(|s| s.to_owned())
             .collect();
-        lines.push(Line { start: _read_point(ps[0].to_owned()), end:  _read_point(ps[1].to_owned()) });
+        lines.push(Line { start: read_point(ps[0].to_owned()), end:  read_point(ps[1].to_owned()) });
     }
 
     // board setup
@@ -54,7 +62,7 @@ fn compute(filename: &str, with_diags: bool) -> i32 {
     b.cnt(1)
 }
 
-fn _read_point(s: String) -> Point {
+fn read_point(s: String) -> Point {
     let cs: Vec<usize> = s
         .split(',')
         .map(|n| n.parse::<usize>().unwrap())
