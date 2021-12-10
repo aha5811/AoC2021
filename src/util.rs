@@ -49,7 +49,8 @@ fn _test<T: PartialEq + Display>(pre: String, exp: T, res: T) {
     if exp == res {
         println!("{} ok", pre);
     } else {
-        println!("{0} failed! expected {1} but was {2}", pre, exp, res)
+        println!("{0} failed! expected {1} but was {2}", pre, exp, res);
+        panic!();
     }
 }
 
@@ -62,16 +63,15 @@ pub fn do_day(f: fn(), s: &str) {
 pub fn do_part<T: Display, A>(n: u8, f: fn(arg: A) -> T, arg: A) {
     let start = Instant::now();
     let res = f(arg);
-    _do_part(start, res, n);
+    _do_part(start, res, n)
 }
 
 pub fn do_part_2<T: Display, A1, A2>(n: u8, f: fn(arg1: A1, arg2: A2) -> T, arg1: A1, arg2: A2) {
     let start = Instant::now();
     let res = f(arg1, arg2);
-    _do_part(start, res, n);
+    _do_part(start, res, n)
 }
 
 fn _do_part<T: Display>(i: Instant, res: T, n: u8) {
-    let duration = i.elapsed();
-    println!("part{0}: {1} ({2:?})", n, res, duration);
+    println!("part{0}: {1} ({2:?})", n, res, i.elapsed());
 }
