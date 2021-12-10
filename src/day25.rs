@@ -7,13 +7,13 @@ pub fn main() {
 }
 
 pub fn part1(filename: &str) -> i32 {
-    let strings = crate::util::read_lines(filename);
+    let _strings = crate::util::read_lines(filename);
     
     0
 }
 
 pub fn part2(filename: &str) -> i32 {
-    let strings = crate::util::read_lines(filename);
+    let _strings = crate::util::read_lines(filename);
     
     0
 }
