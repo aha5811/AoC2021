@@ -6,21 +6,21 @@ pub fn main() {
     crate::util::do_part(2, part2, "day10");
 }
 
-pub fn part1(filename: &str) -> i32 {
+pub fn part1(filename: &str) -> i128 {
     let strings = crate::util::read_lines(filename);
     
     let mut ret = 0;
     for string in strings {
-        ret += get_error(string).1;
+        ret += get_state(string).1;
     }
     ret
 }
 
 const PAIRS: [(char, char); 4] = [ ('(', ')'), ('[', ']'), ('{', '}'), ('<', '>') ];
 
-const ES: [(char, i32); 4] = [ (')', 3), (']', 57), ('}', 1197), ('>', 25137) ];
+const ES: [(char, i128); 4] = [ (')', 3), (']', 57), ('}', 1197), ('>', 25137) ];
 
-fn get_error(string: String) -> (Vec<char>, i32) {
+fn get_state(string: String) -> (Vec<char>, i128) {
     // we return the open stack for part2
 
     let mut open: Vec<char> = Vec::new();
@@ -36,7 +36,7 @@ fn get_error(string: String) -> (Vec<char>, i32) {
                 // already popped
             } else {
                 open.push(c); // re-push (there's no peek and pop+push is faster than seek)
-                return (open, get_error_score(c))
+                return (open, get_char_error_score(c))
             }
         }
     }
@@ -48,13 +48,12 @@ fn matches(o: char, c: char) -> bool {
     PAIRS.iter().find(|&&(a, b)| a == o && b == c) != None
 }
 
-fn get_error_score(c: char) -> i32 {
-    for (cc, score) in ES {
-        if c == cc {
-            return score;
-        }
-    }
-    0
+fn get_char_error_score(c: char) -> i128 {
+    _get_score(c, ES)
+}
+
+fn _get_score(c: char, scores: [(char, i128); 4]) -> i128 {
+    *scores.iter().find(|&&(cc, _)| cc == c).map(|(_, score)| score).unwrap()
 }
 
 pub fn part2(filename: &str) -> i128 {
@@ -63,7 +62,7 @@ pub fn part2(filename: &str) -> i128 {
     let mut scores = Vec::new();
 
     for string in strings {
-        let (open, error) = get_error(string);
+        let (open, error) = get_state(string);
         if error == 0 {
             scores.push(get_closing_score(open))
         }
@@ -80,25 +79,20 @@ const CS: [(char, i128); 4] = [ (')', 1), (']', 2), ('}', 3), ('>', 4) ];
 fn get_closing_score(mut open: Vec<char>) -> i128 {
     let mut ret: i128 = 0;
     loop {
+        if open.len() == 0 {
+            break;
+        }
         let co = open.pop().unwrap();
         for (o, c) in PAIRS.iter() {
             if *o == co {
                 ret *= 5;
-                ret += get_closing_score_char(*c)
+                ret += get_char_closing_score(*c)
             }
-        }
-        if open.len() == 0 {
-            break;
         }
     }
     ret
 }
 
-fn get_closing_score_char(c: char) -> i128 {
-    for (cc, score) in CS {
-        if c == cc {
-            return score;
-        }
-    }
-    0
+fn get_char_closing_score(c: char) -> i128 {
+    _get_score(c, CS)
 }

@@ -5,11 +5,7 @@ use std::time::{Instant};
 use std::fmt::Display;
 
 pub fn to_i32(strings: Vec<String>) -> Vec<i32> {
-    let mut ret = Vec::new();
-    for s in strings {
-        ret.push(s.parse().unwrap());
-    }
-    ret
+    strings.iter().map(|s| s.parse::<i32>().unwrap()).collect()
 }
 
 const DIR: &str = "src/inputs/";
@@ -20,28 +16,29 @@ pub fn read_lines(filename: &str) -> Vec<String> {
     _read_lines(str)
 }
 
-fn _read_lines<P>(filename: P) -> Vec<String>
-where P: AsRef<Path>, {
+fn _read_lines<T: std::fmt::Display + AsRef<Path>>(filename: T) -> Vec<String> {
+    let start = Instant::now();
     let mut ret = Vec::new();
-    let file = File::open(filename).unwrap();
+    let file = File::open(&filename).unwrap();
     let reader = BufReader::new(file);
     for line in reader.lines() {
         ret.push(line.unwrap());
     }
+    println!("  read {0} in {1:?}", filename, start.elapsed());
     ret
 }
 
 pub fn read_ns(string: String) -> Vec<i32> {
-    return string.split(',').map(|n| n.parse::<i32>().unwrap()).collect()
+    string.split(',').map(|n| n.parse::<i32>().unwrap()).collect()
 }
 
 pub fn test<T: PartialEq + Display>(n: u8, exp: T, res: T) {
-    let pre = format!("test part{}", n);
+    let pre = format!("> test part{}", n);
     _test(pre, exp, res);
 }
 
 pub fn test_2<T: PartialEq + Display>(n: u8, s: &str, exp: T, res: T) {
-    let pre = format!("part{0} test ({1})", n, s);
+    let pre = format!("> part{0} test ({1})", n, s);
     _test(pre, exp, res);
 }
 
@@ -73,5 +70,5 @@ pub fn do_part_2<T: Display, A1, A2>(n: u8, f: fn(arg1: A1, arg2: A2) -> T, arg1
 }
 
 fn _do_part<T: Display>(i: Instant, res: T, n: u8) {
-    println!("part{0}: {1} ({2:?})", n, res, i.elapsed());
+    println!("> part{0}: {1} ({2:?})", n, res, i.elapsed());
 }
