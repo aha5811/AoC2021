@@ -32,10 +32,9 @@ fn get_state(string: String) -> (Vec<char>, i128) {
         if openers.iter().find(|&&x| x == c) != None {
             open.push(c);
         } else {
-            if matches(open.pop().unwrap(), c) {
-                // already popped
+            if matches(open[open.len() - 1], c) {
+                open.pop();
             } else {
-                open.push(c); // re-push (there's no peek and pop+push is faster than seek)
                 return (open, get_char_error_score(c))
             }
         }
