@@ -1,9 +1,9 @@
 
 pub fn main() {
-    crate::util::test_i32("day05 #1 test", 5, part1("day05_test"));
-    println!("day05 #1: {}", part1("day05"));
-    crate::util::test_i32("day05 #2 test", 12, part2("day05_test"));
-    println!("day05 #2: {}", part2("day05"));
+    crate::util::test(1, 5, part1("day05_test"));
+    crate::util::do_part(1, part1, "day05");
+    crate::util::test(2, 12, part2("day05_test"));
+    crate::util::do_part(2, part2, "day05");
 }
 
 use std::cmp;

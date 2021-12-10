@@ -11,14 +11,14 @@ mod day09;
 mod day10;
 
 fn main() {
-    day01::main();
-    day02::main();
-    day03::main();
-    day04::main();
-    day05::main();
-    day06::main();
-    day07::main();
-    day08::main();
-    day09::main();
-    day10::main();
+    util::do_day(day01::main, "day01");
+    util::do_day(day02::main, "day02");
+    util::do_day(day03::main, "day03");
+    util::do_day(day04::main, "day04");
+    util::do_day(day05::main, "day05");
+    util::do_day(day06::main, "day06");
+    util::do_day(day07::main, "day07");
+    util::do_day(day08::main, "day08");
+    util::do_day(day09::main, "day09");
+    util::do_day(day10::main, "day10");
 }

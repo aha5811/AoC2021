@@ -1,10 +1,10 @@
 
 pub fn main() {
-    crate::util::test_i32("day06 #1 test 18", 26, part1("day06_test", 18));
-    crate::util::test_i32("day06 #1 test 80", 5934, part1("day06_test", 80));
-    println!("day06 #1: {}", part1("day06", 80));
-    crate::util::test_i128("day06 #2 test 256", 26984457539, part2("day06_test", 256));
-    println!("day06 #2: {}", part2("day06", 256));
+    crate::util::test_2(1, "18", 26, part1("day06_test", 18));
+    crate::util::test_2(1, "80", 5934, part1("day06_test", 80));
+    crate::util::do_part_2(1, part1, "day06", 80);
+    crate::util::test_2(2, "256", 26984457539, part2("day06_test", 256));
+    crate::util::do_part_2(2, part2, "day06", 256);
 }
 
 pub fn part1(filename: &str, days: usize) -> i32 {

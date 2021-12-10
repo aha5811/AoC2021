@@ -1,9 +1,9 @@
 
 pub fn main() {
-    crate::util::test_i32("day09 #1 test", 15, part1("day09_test"));
-    println!("day09 #1: {}", part1("day09"));
-    crate::util::test_i32("day09 #2 test", 1134, part2("day09_test"));
-    println!("day09 #2: {}", part2("day09"));
+    crate::util::test(1, 15, part1("day09_test"));
+    crate::util::do_part(1, part1, "day09");
+    crate::util::test(2, 1134, part2("day09_test"));
+    crate::util::do_part(2, part2, "day09");
 }
 
 pub fn part1(filename: &str) -> i32 {

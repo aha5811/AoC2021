@@ -1,8 +1,8 @@
 
 pub fn main() {
-    println!("day01 #1: {}", part1("day01"));
-    crate::util::test_i32("day01 #2 test", 5, part2("day01_2_test"));
-    println!("day01 #2: {}", part2("day01"));
+    crate::util::do_part(1, part1, "day01");
+    crate::util::test(2, 5, part2("day01_2_test"));
+    crate::util::do_part(2, part2, "day01");
 }
 
 pub fn part1(filename: &str) -> i32 {

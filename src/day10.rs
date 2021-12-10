@@ -1,9 +1,9 @@
 
 pub fn main() {
-    crate::util::test_i32("day10 #1 test", 26397, part1("day10_test"));
-    println!("day10 #1: {}", part1("day10"));
-    crate::util::test_i128("day10 #2 test", 288957, part2("day10_test"));
-    println!("day10 #2: {}", part2("day10"));
+    crate::util::test(1, 26397, part1("day10_test"));
+    crate::util::do_part(1, part1, "day10");
+    crate::util::test(2, 288957, part2("day10_test"));
+    crate::util::do_part(2, part2, "day10");
 }
 
 const SES: [(char, i32); 4] = [ (')', 3), (']', 57), ('}', 1197), ('>', 25137) ];

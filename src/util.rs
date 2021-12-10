@@ -1,6 +1,8 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
+use std::time::{Instant};
+use std::fmt::Display;
 
 pub fn to_i32(strings: Vec<String>) -> Vec<i32> {
     let mut ret = Vec::new();
@@ -33,18 +35,43 @@ pub fn read_ns(string: String) -> Vec<i32> {
     return string.split(',').map(|n| n.parse::<i32>().unwrap()).collect()
 }
 
-pub fn test_i32(string: &str, exp: i32, res: i32) {
+pub fn test<T: PartialEq + Display>(n: u8, exp: T, res: T) {
+    let pre = format!("test part{}", n);
+    _test(pre, exp, res);
+}
+
+pub fn test_2<T: PartialEq + Display>(n: u8, s: &str, exp: T, res: T) {
+    let pre = format!("part{0} test ({1})", n, s);
+    _test(pre, exp, res);
+}
+
+fn _test<T: PartialEq + Display>(pre: String, exp: T, res: T) {
     if exp == res {
-        println!("{} ok", string);
+        println!("{} ok", pre);
     } else {
-        println!("{0} failed! expected {1:?} but was {2:?}", string, exp, res)
+        println!("{0} failed! expected {1} but was {2}", pre, exp, res)
     }
 }
 
-pub fn test_i128(string: &str, exp: i128, res: i128) {
-    if exp == res {
-        println!("{} ok", string);
-    } else {
-        println!("{0} failed! expected {1:?} but was {2:?}", string, exp, res)
-    }
+pub fn do_day(f: fn(), s: &str) {
+    println!("----- {} -----", s);
+    f();
+    println!("");
+}
+
+pub fn do_part<T: Display, A>(n: u8, f: fn(arg: A) -> T, arg: A) {
+    let start = Instant::now();
+    let res = f(arg);
+    _do_part(start, res, n);
+}
+
+pub fn do_part_2<T: Display, A1, A2>(n: u8, f: fn(arg1: A1, arg2: A2) -> T, arg1: A1, arg2: A2) {
+    let start = Instant::now();
+    let res = f(arg1, arg2);
+    _do_part(start, res, n);
+}
+
+fn _do_part<T: Display>(i: Instant, res: T, n: u8) {
+    let duration = i.elapsed();
+    println!("part{0}: {1} ({2:?})", n, res, duration);
 }
