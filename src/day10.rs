@@ -81,13 +81,10 @@ fn get_closing_score(mut open: Vec<char>) -> i128 {
         if open.len() == 0 {
             break;
         }
-        let co = open.pop().unwrap();
-        for (o, c) in PAIRS.iter() {
-            if *o == co {
-                ret *= 5;
-                ret += get_char_closing_score(*c)
-            }
-        }
+        let curr_open = open.pop().unwrap();
+        let c = *PAIRS.iter().find(|&&(o, _)| o == curr_open).map(|(_, c)| c).unwrap();
+        ret *= 5;
+        ret += get_char_closing_score(c)
     }
     ret
 }
