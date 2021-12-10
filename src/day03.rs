@@ -5,7 +5,7 @@ pub fn main() {
     crate::util::do_part(2, part2, "day03");
 }
 
-pub fn part1(filename: &str) -> i32 {
+pub fn part1(filename: &str) -> isize {
     let strings = crate::util::read_lines(filename);
     
     // length of strings
@@ -32,11 +32,11 @@ pub fn part1(filename: &str) -> i32 {
         }
     }
 
-    to_i32(&gamma) * to_i32(&epsilon)
+    to_isize(&gamma) * to_isize(&epsilon)
 }
 
-fn to_i32(s: &str) -> i32 {
-    isize::from_str_radix(s, 2).unwrap() as i32
+fn to_isize(s: &str) -> isize {
+    isize::from_str_radix(s, 2).unwrap()
 }
 
 fn filter(strings: Vec<String>, pos: usize, most: bool) -> Vec<String> {
@@ -59,7 +59,7 @@ fn filter(strings: Vec<String>, pos: usize, most: bool) -> Vec<String> {
     }
 }
 
-fn get_filtered(strings: &Vec<String>, len: usize, most: bool) -> i32 {
+fn get_filtered(strings: &Vec<String>, len: usize, most: bool) -> isize {
     let mut filtered = strings.clone();
     for pos in 0.. len {
         filtered = filter(filtered, pos, most);
@@ -68,12 +68,12 @@ fn get_filtered(strings: &Vec<String>, len: usize, most: bool) -> i32 {
         }
     }
 
-    to_i32(filtered.iter().next().unwrap())
+    to_isize(filtered.iter().next().unwrap())
 }
 
-pub fn part2(filename: &str) -> i32 {
+pub fn part2(filename: &str) -> isize {
     let strings = crate::util::read_lines(filename);
-    let len = strings.iter().next().unwrap().len() as usize;
+    let len = strings.iter().next().unwrap().len();
 
     let oxy_r = get_filtered(&strings, len, true); // oxygen generator rating
     let co2_r = get_filtered(&strings, len, false); // CO2 scrubber rating

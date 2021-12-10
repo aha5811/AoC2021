@@ -52,17 +52,15 @@ struct IO {
     out: Vec<String>  // ^ length 4
 }
 
-pub fn part2(filename: &str) -> i32 {
+pub fn part2(filename: &str) -> usize {
     let strings = crate::util::read_lines(filename);
     let ios = read_ios(strings);
     let iios = to_iios(ios);
    
-    let mut ret: i32 = 0;
-
+    let mut ret = 0;
     for mut iio in iios {
         ret += solve_wiring(&mut iio);
     }
-
     ret
 }
 
@@ -97,7 +95,7 @@ fn to_iio(strings: Vec<String>) -> Vec<Vec<usize>> {
     ret
 }
 
-fn solve_wiring(iio: &mut IIO) -> i32 {
+fn solve_wiring(iio: &mut IIO) -> usize {
 
     let mut all = Vec::<Vec<usize>>::new();
     add_no_dupes(&mut all, &mut iio.inp);
@@ -142,13 +140,13 @@ fn solve_wiring(iio: &mut IIO) -> i32 {
 
         // find same pattern, its position is the result
 
-        let mut n: i32 = 0;
+        let mut n = 0;
         for (digit, pattern) in digits.iter().enumerate() {
             if is_same(opattern, pattern) {
-                n = digit as i32
+                n = digit
             }
         }
-        let multi = 10i32.pow(3 - pos as u32); // 1000, 100, 10, 1
+        let multi = 10i32.pow(3 - pos as u32) as usize; // 1000, 100, 10, 1
         ret += n * multi;
     }
 

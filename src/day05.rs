@@ -130,8 +130,8 @@ impl Line {
 
         let mut i = 0;
         loop {
-            let x = (self.start.x as i32 + i * dx) as usize;
-            let y = (self.start.y as i32 + i * dy) as usize;
+            let x = (self.start.x as isize + i * dx) as usize;
+            let y = (self.start.y as isize + i * dy) as usize;
             ret.push(Point { x: x, y: y });
             if x == self.end.x && y == self.end.y {
                 break;

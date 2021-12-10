@@ -7,7 +7,7 @@ pub fn main() {
     crate::util::do_part_2(2, part2, "day06", 256);
 }
 
-pub fn part1(filename: &str, days: usize) -> i32 {
+pub fn part1(filename: &str, days: usize) -> usize {
     let mut strings = crate::util::read_lines(filename);
     let mut ns = crate::util::read_ns(strings.remove(0));
 
@@ -21,7 +21,7 @@ pub fn part1(filename: &str, days: usize) -> i32 {
         }
     }
 
-    ns.len() as i32
+    ns.len()
 }
 
 pub fn part2(filename: &str, days: usize) -> i128 {
