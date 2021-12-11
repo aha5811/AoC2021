@@ -6,12 +6,16 @@ pub fn main() {
     crate::util::do_part(2, part2, "day11");
 }
 
+const PART1_WITH_IMG_GEN: bool = false;
+const PART2_WITH_IMG_GEN: bool = false;
+const OUTPATH: &str = "output/day11/";
+
 pub fn part1(filename: &str) -> usize {
     let strings = crate::util::read_lines(filename);
-    let mut b = read_board(strings);
+    let mut b = read_board(strings, PART1_WITH_IMG_GEN);
 
-    for _ in 0..100 {
-        b.step();
+    for step in 0..100 {
+        b.step(&step);
     }
 
     b.flash_cnt
@@ -19,7 +23,7 @@ pub fn part1(filename: &str) -> usize {
 
 // see day09
 
-fn read_board(strings: Vec<String>) -> Board {
+fn read_board(strings: Vec<String>, with_img_gen: bool) -> Board {
     let mut w = 0;
     let mut es = Vec::<usize>::new();
     for string in strings {
@@ -28,7 +32,8 @@ fn read_board(strings: Vec<String>) -> Board {
         es.append(&mut ns);
     }
 
-    Board { width: w, height: es.len() / w, energys: es, flash_cnt: 0 }
+    Board { width: w, height: es.len() / w, energys: es,
+        flash_cnt: 0, with_img_gen: with_img_gen }
 }
 
 fn read_ns(string: String) -> Vec<usize> {
@@ -39,7 +44,8 @@ struct Board {
     width: usize,
     height: usize,
     energys: Vec<usize>,
-    flash_cnt: usize
+    flash_cnt: usize,
+    with_img_gen: bool
 }
 
 impl Board {
@@ -53,7 +59,7 @@ impl Board {
         self.energys[p] += 1
     }
 
-    fn step(&mut self) {
+    fn step(&mut self, step: &usize) {
 
         let mut flashers = Vec::<usize>::new();
 
@@ -68,6 +74,10 @@ impl Board {
         while flashers.len() > 0 {
             let p = flashers.pop().unwrap() as usize;
             flashers.append(&mut self.flash(p))
+        }
+
+        if self.with_img_gen {
+            output(self, format!("{0}step{1}.bmp", OUTPATH, step));
         }
 
         // set 10 to 0
@@ -143,12 +153,12 @@ impl Board {
 
 pub fn part2(filename: &str) -> usize {
     let strings = crate::util::read_lines(filename);
-    let mut b = read_board(strings);
+    let mut b = read_board(strings, PART2_WITH_IMG_GEN);
 
     let mut step = 1;
     let mut prev_flash_cnt = 0;
     loop {
-        b.step();
+        b.step(&step);
         let flash_cnt = b.flash_cnt;
         if flash_cnt - prev_flash_cnt == b.width * b.height {
             return step
@@ -156,4 +166,28 @@ pub fn part2(filename: &str) -> usize {
         prev_flash_cnt = flash_cnt;
         step += 1
     }
+}
+
+use bmp::{Image, Pixel};
+
+fn output(b: &Board, fname: String) {
+    let f = 20; // magnifying factor
+
+    let mut img = Image::new((b.width * f) as u32, (b.height * f) as u32);
+    for x in 0..b.width {
+        for y in 0..b.height {
+            let mut e = b.get_e(x, y) as u8;
+            if e > 9 {
+                e = 255;
+            } else {
+                e *= 15;
+            }
+            for dx in 0..f {
+                for dy in 0..f {
+                    img.set_pixel((x * f + dx) as u32, (y * f + dy) as u32, Pixel::new(e, e, e));
+                }
+            }
+        }
+    }
+    let _ = img.save(fname);
 }
