@@ -6,8 +6,6 @@ pub fn main() {
     crate::util::do_part(2, part2, "day13");
 }
 
-use std::cmp;
-
 pub fn part1(filename: &str) -> usize {
     compute(filename, false)
 }
@@ -16,12 +14,13 @@ pub fn part2(filename: &str) -> usize {
     compute(filename, true)
 }
 
+use std::cmp;
+
 fn compute(filename: &str, for_part2: bool) -> usize {
     let strings = crate::util::read_lines(filename);
     
     let mut points = Vec::<(usize, usize)>::new();
     let mut folds = Vec::<(bool, usize)>::new();
-
     for string in strings {
         if string.len() > 0 {
             match &string[..1] {
@@ -37,23 +36,20 @@ fn compute(filename: &str, for_part2: bool) -> usize {
         maxx = cmp::max(*x, maxx);
         maxy = cmp::max(*y, maxy);
     }
-    let width = maxx + 1;
-    let height = maxy + 1;
-
-    let mut b = Board { width: width, height: height, dots: vec![false; width * height] };
+    let mut b = new_board(maxx + 1, maxy + 1);
 
     for p in points {
         b.dot(p)
     }
 
-    for (x_or_y, n) in folds {
-        b = b.fold(x_or_y, n);
-        if !for_part2 {
+    for (x_else_y, n) in folds {
+        b = b.fold(x_else_y, n);
+        if !for_part2 { // part1 -> only one fold
             break;
         }
     }
 
-    if for_part2 {
+    if for_part2 { // part2 -> output
         b.print()
     }
 
@@ -77,46 +73,48 @@ impl Board {
         self.width * y + x
     }
 
-    fn fold(&self, x_or_y: bool, fpos: usize) -> Board {
+    fn fold(&self, x_else_y: bool, fold_at: usize) -> Board {
         
         // next board dim & dots
-        let width = if x_or_y { fpos } else { self.width };
-        let height = if x_or_y { self.height } else { fpos };
-        let mut retboard = Board {
-            width: width, height: height,
-            dots: vec![false; width * height] };
+        let mut ret =
+            new_board(
+                if x_else_y { fold_at } else { self.width },
+                if x_else_y { self.height } else { fold_at }
+            );
 
         // fold
-        for a in 0 .. fpos {
-            for b in 0 .. if x_or_y { self.height } else { self.width } {
-                let xy1 = if x_or_y { (a, b) } else { (b, a) };
-                let a_mirror = fpos + (fpos - a);
-                let xy2 = if x_or_y { (a_mirror, b) } else { (b, a_mirror) };
-                let p1 = self.xy_to_p(xy1);
-                let p2 = self.xy_to_p(xy2);
-                let bp = retboard.xy_to_p(xy1);
-                retboard.dots[bp] = self.dots[p1] || self.dots[p2];
+        for a in 0 .. fold_at {
+            for b in 0 .. if x_else_y { self.height } else { self.width } {
+                let xy = if x_else_y { (a, b) } else { (b, a) };
+                let a_mirror = fold_at + (fold_at - a);
+                let xy_mirror = if x_else_y { (a_mirror, b) } else { (b, a_mirror) };
+                if self.dots[self.xy_to_p(xy)] || self.dots[self.xy_to_p(xy_mirror)] {
+                    ret.dot(xy);
+                }
             }
         }
 
-        retboard
+        ret
     }
 
     fn dots(&self) -> usize {
-        self.dots.iter().map(|b| { if *b { 1 } else { 0 } }).sum()
+        self.dots.iter().map(|&b| { if b { 1 } else { 0 } }).sum()
     }
 
     fn print(&self) {
         for y in 0..self.height {
-            let mut line = "".to_owned();
             for x in 0..self.width {
                 let p = self.xy_to_p((x, y));
-                line.push_str(if self.dots[p] { "#" } else { "." });
+                print!("{}", if self.dots[p] { "#" } else { "." });
             }
-            println!("{}", line);
+            println!();
         }
     }
 
+}
+
+fn new_board(width: usize, height: usize) -> Board {
+    Board { width: width, height: height, dots: vec![false; width * height] }
 }
 
 fn read_fold(s: &String) -> (bool, usize) {
@@ -128,5 +126,5 @@ fn read_fold(s: &String) -> (bool, usize) {
 
 fn read_point(s: &String) -> (usize, usize) {
     let xy = crate::util::read_ns(s.to_owned());
-    (xy[0] as usize, xy[1]  as usize)
+    (xy[0] as usize, xy[1] as usize)
 }
