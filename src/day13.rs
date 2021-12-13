@@ -42,8 +42,8 @@ fn compute(filename: &str, for_part2: bool) -> usize {
         b.dot(p)
     }
 
-    for (x_else_y, n) in folds {
-        b = b.fold(x_else_y, n);
+    for (x_else_y, fold_at) in folds {
+        b = b.fold(x_else_y, fold_at);
         if !for_part2 { // part1 -> only one fold
             break;
         }
@@ -69,7 +69,11 @@ impl Board {
         self.dots[p] = true;
     }
 
-    pub fn xy_to_p(&self, (x, y): (usize, usize)) -> usize {
+    fn is_dot(&self, xy: (usize, usize)) -> bool {
+        self.dots[self.xy_to_p(xy)]
+    }
+
+    fn xy_to_p(&self, (x, y): (usize, usize)) -> usize {
         self.width * y + x
     }
 
@@ -88,7 +92,7 @@ impl Board {
                 let xy = if x_else_y { (a, b) } else { (b, a) };
                 let a_mirror = fold_at + (fold_at - a);
                 let xy_mirror = if x_else_y { (a_mirror, b) } else { (b, a_mirror) };
-                if self.dots[self.xy_to_p(xy)] || self.dots[self.xy_to_p(xy_mirror)] {
+                if self.is_dot(xy) || self.is_dot(xy_mirror) {
                     ret.dot(xy);
                 }
             }
@@ -104,8 +108,7 @@ impl Board {
     fn print(&self) {
         for y in 0..self.height {
             for x in 0..self.width {
-                let p = self.xy_to_p((x, y));
-                print!("{}", if self.dots[p] { "#" } else { "." });
+                print!("{}", if self.is_dot((x, y)) { "#" } else { "." });
             }
             println!();
         }
