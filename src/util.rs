@@ -4,11 +4,11 @@ use std::path::Path;
 use std::time::{Instant};
 use std::fmt::Display;
 
+const DIR: &str = "inputs/";
+
 pub fn to_i32(strings: Vec<String>) -> Vec<i32> {
     strings.iter().map(|s| s.parse::<i32>().unwrap()).collect()
 }
-
-const DIR: &str = "src/inputs/";
 
 pub fn read_lines(filename: &str) -> Vec<String> {
     let mut str = DIR.to_owned();

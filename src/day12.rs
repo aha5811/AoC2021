@@ -32,7 +32,7 @@ fn compute(filename: &str, for_part2: bool) -> Vec<Path> {
 
     let mut paths = Vec::new();
     
-    let start = Path { cave: "start".to_owned(), visited: Vec::new(), visited_small: Vec::new() };
+    let start = Path { cave: "start".to_owned(), small_caves_visited: Vec::new() };
     cs_go(&mut paths, &cs, start, for_part2);
 
     paths
@@ -42,9 +42,8 @@ fn cs_go(paths: &mut Vec<Path>, cs: &CaveSystem, mut path: Path, for_part2: bool
     
     let cave = path.cave.clone();
 
-    path.visited.push(cave.clone());
-    if !is_big(cave.clone()) {
-        path.visited_small.push(cave.clone());
+    if is_small(&cave) {
+        path.small_caves_visited.push(cave.clone());
     }
 
     if &cave == "end" {
@@ -63,16 +62,17 @@ fn cs_go(paths: &mut Vec<Path>, cs: &CaveSystem, mut path: Path, for_part2: bool
         
         let mut next_caves = Vec::new();
         for nc in all_next_caves {
-            if is_big(nc.clone()) { // big caves can be visited without restriction
-                next_caves.push(nc);
-            } else if path.visited_small.iter().find(|&v| *v == nc) == None { // small cave never visited before
-                next_caves.push(nc);
+            let mut add = false;
+            if !is_small(&nc) { // big caves can be visited without restriction
+                add = true
+            } else if path.small_caves_visited.iter().find(|&v| *v == nc) == None { // small cave never visited before
+                add = true
             } else if for_part2 {
                 if nc == "start" { // start never twice
                     continue
                 }
                 let ncs: usize =
-                    path.visited_small.iter()
+                    path.small_caves_visited.iter()
                     .filter(|&c| c == &nc)
                     .map(|_| 1).sum();
                 if ncs == 2 { // this small cave has been visited twice
@@ -81,7 +81,7 @@ fn cs_go(paths: &mut Vec<Path>, cs: &CaveSystem, mut path: Path, for_part2: bool
 
                 // get all other small visited
                 let mut others: Vec<String> =
-                    path.visited_small.iter()
+                    path.small_caves_visited.iter()
                     .filter(|&c| c != &nc)
                     .map(|s| s.to_owned()).collect();
                 let olen1 = others.len();
@@ -92,18 +92,18 @@ fn cs_go(paths: &mut Vec<Path>, cs: &CaveSystem, mut path: Path, for_part2: bool
                 let olen2 = others.len();
 
                 if olen2 == olen1 { // if there were no other small caves visited twice 
-                    next_caves.push(nc);
+                    add = true
                 }
             }
+            if add {
+                next_caves.push(nc)
+            }
         }
-
-        // [ start HN kj dc HN kj dc HN end ]
 
         for n in next_caves {
             cs_go(paths, &cs,
                 Path { cave: n,
-                    visited: path.visited.clone(),
-                    visited_small: path.visited_small.clone() }, for_part2);
+                    small_caves_visited: path.small_caves_visited.clone() }, for_part2);
         }
     }
 }
@@ -119,12 +119,11 @@ fn read_cs(strings: Vec<String>) -> CaveSystem {
 fn read_tunnel(string: String) -> Tunnel {
     // start-A
     let s: Vec<String> = string.split('-').map(|s| s.to_owned()).collect();
-    Tunnel { cave1: s[0].to_owned(), cave2: s[1].to_owned() }
+    Tunnel { cave1: s[0].clone(), cave2: s[1].clone() }
 }
 
-fn is_big(string: String) -> bool {
-    let sup = string.to_uppercase();
-    sup == string
+fn is_small(string: &String) -> bool {
+    string.to_uppercase() != *string
 }
 
 struct CaveSystem {
@@ -138,14 +137,13 @@ struct Tunnel {
 
 struct Path {
     cave: String,
-    visited: Vec<String>,
-    visited_small: Vec<String>
+    small_caves_visited: Vec<String>
 }
 
 impl std::fmt::Display for Path {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut s = "[".to_owned();
-        for v in self.visited.iter() {
+        for v in self.small_caves_visited.iter() {
             let vs = format!(" {}", v);
             s.push_str(vs.as_str());
         }
