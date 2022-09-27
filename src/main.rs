@@ -26,6 +26,7 @@ mod day24;
 mod day25;
 
 fn main() {
+    /*
     util::do_day(day01::main, "day01");
     util::do_day(day02::main, "day02");
     util::do_day(day03::main, "day03");
@@ -40,7 +41,9 @@ fn main() {
     util::do_day(day12::main, "day12");
     util::do_day(day13::main, "day13");
     util::do_day(day14::main, "day14");
+    */
     util::do_day(day15::main, "day15");
+    /*
     util::do_day(day16::main, "day16");
     util::do_day(day17::main, "day17");
     util::do_day(day18::main, "day18");
@@ -51,4 +54,5 @@ fn main() {
     util::do_day(day23::main, "day23");
     util::do_day(day24::main, "day24");
     util::do_day(day25::main, "day25");
+    */
 }

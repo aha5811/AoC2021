@@ -6,6 +6,8 @@ pub fn main() {
     crate::util::do_part(2, part2, "day13");
 }
 
+const OUTPATH: &str = "output/day13/";
+
 pub fn part1(filename: &str) -> usize {
     compute(filename, false)
 }
@@ -42,11 +44,15 @@ fn compute(filename: &str, for_part2: bool) -> usize {
         b.dot(p)
     }
 
+    let mut i = 1;
     for (x_else_y, fold_at) in folds {
         b = b.fold(x_else_y, fold_at);
         if !for_part2 { // part1 -> only one fold
             break;
+        } else {
+            output(&b, format!("{0}step{1}.bmp", OUTPATH, i));
         }
+        i += 1;
     }
 
     if for_part2 { // part2 -> output
@@ -130,4 +136,23 @@ fn read_fold(s: &String) -> (bool, usize) {
 fn read_point(s: &String) -> (usize, usize) {
     let xy = crate::util::read_ns(s.to_owned());
     (xy[0] as usize, xy[1] as usize)
+}
+
+use bmp::{Image, Pixel};
+
+fn output(b: &Board, fname: String) {
+    let f = 1; // magnifying factor
+
+    let mut img = Image::new((b.width * f) as u32, (b.height * f) as u32);
+    for x in 0..b.width {
+        for y in 0..b.height {
+            let e = if b.is_dot((x, y)) { 0 } else { 255 };
+            for dx in 0..f {
+                for dy in 0..f {
+                    img.set_pixel((x * f + dx) as u32, (y * f + dy) as u32, Pixel::new(e, e, e));
+                }
+            }
+        }
+    }
+    let _ = img.save(fname);
 }
